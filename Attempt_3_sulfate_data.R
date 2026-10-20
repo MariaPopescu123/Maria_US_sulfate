@@ -264,7 +264,9 @@ head(sulfate_year)
 
 View(sulfate_year)
 
-
+################################
+  ##### ADDING WATERSHED DATA#####
+#######################################
 
 install.packages("data.table")
 library(data.table)
@@ -293,10 +295,17 @@ zip_file <- file.choose()
 
 unzip(zip_file, list = TRUE)
 
+
+
+library(readr)
+sulfate_topten <- read_csv("sulfate_topten.xlsx")
+View(sulfate_topten)
+
+install.packages("readxl")  # Run only once
 library(readxl)
 
-Sulfate_topten <- read_excel(file.choose())
-View(Sulfate_topten)
+lake_info <- read_excel(file.choose())
+
 
 
 #joining sulfate top ten percent of depths with watershed data
@@ -306,7 +315,52 @@ library(dpylr)
 sulfate_watershed<- Sulfate_topten%>%
   left_join(lake_watersheds_clean,
             by="lagoslakeid")
-View(sulfate_watershed)
+
+dplyr::n_distinct(
+  watersheds_data$nws_zoneid,
+  na.rm = TRUE
+)
+
+nrow(watersheds_data)
+
+
+library(dplyr)
+
+watersheds_data %>%
+  summarise(
+    total_rows = n(),
+    unique_lakes = n_distinct(lagoslakeid),
+    unique_ws_ids = n_distinct(ws_zoneid, na.rm = TRUE),
+    unique_nws_ids = n_distinct(nws_zoneid, na.rm = TRUE),
+    missing_nws_ids = sum(is.na(nws_zoneid))
+  )
+
+###########################################
+#####EXPLORING LAKE INFORMATION CSV########
+###########################################
+
+library(dplyr)
+library(readr)
+
+library(readr)
+lake_info <- read_csv("excel tables/lake_information (1).csv")
+View(lake_info)
+
+
+dplyr::n_distinct(lake_info$hu4_zoneid, na.rm = TRUE)
+names(lake_info)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
